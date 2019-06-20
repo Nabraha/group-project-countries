@@ -17,7 +17,8 @@ class Languages extends Component {
       .then((res) => res.json())
       .then((data) => {
         this.setState({
-          countries: data
+          countries: data,
+          isLoading: false
         });
       });
   }
@@ -31,21 +32,21 @@ class Languages extends Component {
     return this.state.people.map(addLanguge);
   };
 
-  getLanguagesForCountry = (countryName) => {
-    const countryLang = this.state.countries.find((findCountry) => {
-      if (findCountry.name === countryName) {
-        return findCountry.languages;
-      }
-      return countryLang;
-    });
-  };
-
   // getLanguagesForCountry = (countryName) => {
-  //   const findCountry = this.state.countries.find(function(element) {
-  //     return element.name === countryName;
+  //   const countryLang = this.state.countries.find((findCountry) => {
+  //     if (findCountry.name === countryName) {
+  //       return findCountry.languages;
+  //     }
+  //     return countryLang;
   //   });
-  //   return findCountry.languages;
   // };
+
+  getLanguagesForCountry = (countryName) => {
+    const findCountry = this.state.countries.find(function(element) {
+      return element.name === countryName;
+    });
+    return findCountry.languages;
+  };
 
   render() {
     if (this.state.isLoading) {
@@ -66,7 +67,7 @@ class Languages extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.peopleWithLanguages.map((result) => {
+              {this.getPeopleWithLanguage().map((result) => {
                 return (
                   <tr key={result}>
                     <td>{result.name}</td>
