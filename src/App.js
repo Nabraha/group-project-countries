@@ -3,7 +3,10 @@ import Statistics from "./components/Statistics";
 import Languages from "./components/Languages";
 import Population from "./components/Population";
 import members from "./data/members";
+import people from "./data/members";
+// import Fetch from "./Fetch";
 import "./App.css";
+// import Fetch from "./Fetch";
 
 class App extends Component {
   constructor() {
@@ -21,7 +24,8 @@ class App extends Component {
         </header>
         <Statistics />
         <Population />
-        <Languages />
+        <Languages results={people} />
+        {/* <Fetch /> */}
       </div>
     );
   }
