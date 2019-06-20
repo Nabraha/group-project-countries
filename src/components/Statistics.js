@@ -4,13 +4,15 @@ import "./Statistics.css";
 
 class Statistics extends Component {
   render() {
-    const total = this.props.totalMembers;
+    const totalMember = this.props.totalMembers;
+    const totalCountries = this.props.totalCountries;
+    const countriesTotalRegions = this.props.totalRegins;
 
     return (
       <div className="Statistics">
-        <Statistic label="Total Members" total={total} />
-        <Statistic label="Total Countries" total={this.props.totalCountries} />
-        <Statistic label="Total Regions" total />
+        <Statistic label="Total Members" total={totalMember} />
+        <Statistic label="Total Countries" total={totalCountries} />
+        <Statistic label="Total Regions" total={countriesTotalRegions} />
       </div>
     );
   }

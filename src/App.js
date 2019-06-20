@@ -9,9 +9,48 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      countries: []
+      members: members,
+      countries: [],
+      isLoading: true
     };
   }
+
+  componentDidMount() {
+    fetch("https://restcountries.eu/rest/v2")
+      .then((res) => res.json())
+      .then((data) => {
+        this.setState({
+          countries: data,
+          isLoading: false
+        });
+      });
+  }
+
+  getUniqueRegionsCount = () => {
+    const addRegion = (member) => {
+      return {
+        name: member.name,
+        country: member.country,
+        region: this.getRegionForCountry(member.country)
+      };
+    };
+    const membersWithRegins = this.state.members.map(addRegion);
+    const uniqueRegins = [];
+    membersWithRegins.forEach((e) => {
+      if (!uniqueRegins.includes(e.region)) {
+        uniqueRegins.push(e.region);
+      }
+    });
+
+    return uniqueRegins.length;
+  };
+
+  getRegionForCountry = (countryName) => {
+    let country = this.state.countries.find((findCountry) => {
+      return findCountry.name.includes(countryName);
+    });
+    return country.region;
+  };
 
   getUniqueCountriesCount = () => {
     const uniqueCountries = [];
@@ -23,63 +62,10 @@ class App extends Component {
     return uniqueCountries.length;
   };
 
-  // addRegion = (member) => {
-  //   return {
-  //     name: member.name,
-  //     country: member.country,
-  //     region: this.state.countries.find((findCountry) => {
-  //       console.log(findCountry.name);
-  //       console.log(member.country);
-  //       if (findCountry.name === member.country) {
-  //         console.log(findCountry.region);
-  //       }
-  //     })
-  //   };
-  // };
-
-  addMember = () => {
-    const x = members.map((el) => {
-      return {
-        name: el.name,
-        country: el.country,
-        region: this.getRegionForCountry(el.country)
-        // this.state.countries.find((findCountry) => {
-        // if (findCountry.name === el.country) {
-        //   console.log(findCountry.region);
-        // }
-
-        //return findCountry.region;
-      };
-    });
-    //   };
-    // });
-    console.log(x);
-  };
-
-  // getUniqueRegionsCount = () => {
-  //   const membersWithRegion = members.map(this.addRegion);
-  //   console.log(membersWithRegion);
-  // };
-
-  getRegionForCountry = (countryName) => {
-    this.state.countries.filter((findCountry) => {
-      if (findCountry.name === countryName) {
-        console.log(findCountry.region);
-      }
-    });
-  };
-
-  componentDidMount() {
-    fetch("https://restcountries.eu/rest/v2/all")
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState({
-          countries: data
-        });
-      });
-  }
-
   render() {
+    if (this.state.isLoading) {
+      return <span>Loading... </span>;
+    }
     return (
       <div className="App">
         <header className="App-header">
@@ -88,9 +74,8 @@ class App extends Component {
         <Statistics
           totalMembers={members.length}
           totalCountries={this.getUniqueCountriesCount()}
-          totalR={this.getRegionForCountry("Sudan")}
+          totalRegins={this.getUniqueRegionsCount()}
         />
-        {console.log(this.addMember())}
         <Population />
         <Languages />
       </div>
