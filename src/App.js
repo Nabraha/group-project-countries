@@ -76,8 +76,8 @@ class App extends Component {
           totalCountries={this.getUniqueCountriesCount()}
           totalRegins={this.getUniqueRegionsCount()}
         />
-        <Population />
-        <Languages />
+        <Population countries={this.state.countries} />
+        <Languages countries={this.state.countries} />
       </div>
     );
   }

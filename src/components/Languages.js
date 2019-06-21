@@ -8,20 +8,26 @@ class Languages extends Component {
     this.state = {
       people: people,
       countries: [],
-      isLoading: true
+      isLoading: true,
+      searchInput: "",
+      isSearching: false
     };
   }
 
-  componentDidMount() {
-    fetch("https://restcountries.eu/rest/v2/")
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState({
-          countries: data,
-          isLoading: false
-        });
-      });
-  }
+  // compareFunction = (a, b) => {
+  //   const x = this.getPeopleWithLanguage().map((t) => {
+  //     return t.languages.length;
+  //   });
+  //   return a[x] > b[x] ? 1 : -1;
+  // };
+  handleSearchInput = (event) => {
+    console.log(event.target.value);
+    this.setState({
+      serchInput: event.target.value,
+      isSearching: !this.state.isSearching
+    });
+  };
+
   addLanguge = (person) => ({
     name: person.name,
     country: person.country,
@@ -33,11 +39,11 @@ class Languages extends Component {
   };
 
   getLanguagesForCountry = (countryName) => {
-    const findCountry = this.state.countries.find(function(element) {
+    const findCountry = this.props.countries.find(function(element) {
       return element.name.includes(countryName);
     });
 
-    return findCountry.languages.map((language) => language.name);
+    return findCountry.languages.map((languages) => languages.name);
   };
 
   getUniqueLanguageCount = () => {
@@ -52,25 +58,31 @@ class Languages extends Component {
   };
 
   render() {
-    if (this.state.isLoading) {
-      return <span>Loading... </span>;
-    } else {
-      return (
-        <div className="Languages">
-          <div className="Languages-header">
-            <h2>Languages Spoken in Member Countries</h2>
-            <input type="text" placeholder="Search by language" />
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Country</th>
-                <th>Languages</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.getPeopleWithLanguage().map((result) => {
+    return (
+      <div className="Languages">
+        <div className="Languages-header">
+          <h2>Languages Spoken in Member Countries</h2>
+          <input type="text" placeholder="Search by language" onChange={this.handleSearchInput} />
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Country</th>
+              <th>Languages</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.getPeopleWithLanguage()
+              .filter((item) => {
+                if (this.state.isSearching === false) {
+                  return this.getPeopleWithLanguage();
+                } else {
+                  return item.languages.includes(this.state.serchInput);
+                }
+              })
+
+              .map((result) => {
                 return (
                   <tr key={result.name + result.country + result.languages}>
                     <td>{result.name}</td>
@@ -79,17 +91,16 @@ class Languages extends Component {
                   </tr>
                 );
               })}
-            </tbody>
+          </tbody>
 
-            <tfoot>
-              <tr>
-                <td colSpan="3">Total Languages: {this.getUniqueLanguageCount()}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      );
-    }
+          <tfoot>
+            <tr>
+              <td colSpan="3">Total Languages:</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    );
   }
 }
 

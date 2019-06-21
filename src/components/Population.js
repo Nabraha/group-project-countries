@@ -8,20 +8,19 @@ class Population extends Component {
     this.state = {
       people: people,
       countries: [],
-      isLoading: true
+      isLoading: true,
+      searchInput: "",
+      isSearching: false
     };
   }
+  handleSearchInput = (event) => {
+    console.log(event.target.value);
+    this.setState({
+      serchInput: event.target.value,
+      isSearching: !this.state.isSearching
+    });
+  };
 
-  componentDidMount() {
-    fetch("https://restcountries.eu/rest/v2/")
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState({
-          countries: data,
-          isLoading: false
-        });
-      });
-  }
   addPopulation = (person) => ({
     name: person.name,
     country: person.country,
@@ -33,51 +32,54 @@ class Population extends Component {
   };
 
   getPopulationForCountry = (country) => {
-    const findCountry = this.state.countries.find(function(element) {
+    const findCountry = this.props.countries.find(function(element) {
       return element.name.includes(country);
     });
-    console.log(findCountry);
-    // return findCountry.population.map((element) => element.name);
+    return findCountry.population;
   };
 
   render() {
-    if (this.state.isLoading) {
-      return <span>Loading .....</span>;
-    } else {
-      return (
-        <div className="Population">
-          <div className="Population-header">
-            <h2>Population of Member Countries</h2>
-            <input type="text" placeholder="Search by country" />
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Country</th>
-                <th>Population</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.getPeopleWithPopulation().map((result) => {
+    return (
+      <div className="Population">
+        <div className="Population-header">
+          <h2>Population of Member Countries</h2>
+          <input type="text" placeholder="Search by country" onChange={this.handleSearchInput} />
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Country</th>
+              <th>Population</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.getPeopleWithPopulation()
+              .filter((item) => {
+                if (this.state.isSearching === false) {
+                  return this.getPeopleWithPopulation();
+                } else {
+                  return item.name === this.state.searchInput;
+                }
+              })
+              .map((result, index) => {
                 return (
-                  <tr>
+                  <tr key={index}>
                     <td>{result.name}</td>
                     <td>{result.country}</td>
                     <td>{result.population}</td>
                   </tr>
                 );
               })}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="3">Total Population: ???{console.log(this.addPopulation)}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      );
-    }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colSpan="3">Total Population:</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    );
   }
 }
 export default Population;
