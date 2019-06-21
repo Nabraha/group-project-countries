@@ -13,7 +13,7 @@ class Languages extends Component {
   }
 
   componentDidMount() {
-    fetch("https://restcountries.eu/rest/v2/lang/es")
+    fetch("https://restcountries.eu/rest/v2/")
       .then((res) => res.json())
       .then((data) => {
         this.setState({
@@ -32,20 +32,27 @@ class Languages extends Component {
     return this.state.people.map(addLanguge);
   };
 
-  // getLanguagesForCountry = (countryName) => {
-  //   const countryLang = this.state.countries.find((findCountry) => {
-  //     if (findCountry.name === countryName) {
-  //       return findCountry.languages;
-  //     }
-  //     return countryLang;
-  //   });
-  // };
-
   getLanguagesForCountry = (countryName) => {
     const findCountry = this.state.countries.find(function(element) {
-      return element.name === countryName;
+      return element.name.includes(countryName);
     });
-    return findCountry.languages;
+
+    return findCountry.languages.map((language) => language.name);
+  };
+
+  getUniqueLanguages = () => {
+    const uniqueLanguages = [];
+    const languagesList = this.getPeopleWithLanguage().map((item) => item.languages);
+    const changeLanguageListToStr = languagesList.join(",");
+    const arrayOfLanguagesList = changeLanguageListToStr.split(",");
+
+    arrayOfLanguagesList.forEach((item) => {
+      if (!uniqueLanguages.includes(item)) {
+        return uniqueLanguages.push(item);
+      }
+    });
+
+    return uniqueLanguages.length;
   };
 
   render() {
@@ -69,18 +76,18 @@ class Languages extends Component {
             <tbody>
               {this.getPeopleWithLanguage().map((result) => {
                 return (
-                  <tr key={result}>
+                  <tr key={result.name + result.country + result.languages}>
                     <td>{result.name}</td>
                     <td>{result.country}</td>
-                    <td>{result.languages}</td>
+                    <td>{result.languages.join(", ")}</td>
                   </tr>
                 );
               })}
             </tbody>
-            {console.log(this.getLanguagesForCountry("sudan"))}
+
             <tfoot>
               <tr>
-                <td colSpan="3">Total Languages: </td>
+                <td colSpan="3">Total Languages: {this.getUniqueLanguages()}</td>
               </tr>
             </tfoot>
           </table>
