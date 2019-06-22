@@ -38,6 +38,16 @@ class Population extends Component {
     return findCountry.population;
   };
 
+  getUniquePopulationCount = () => {
+    const uniquePopulation = [];
+    people.forEach((e) => {
+      if (!uniquePopulation.includes(e.country)) {
+        uniquePopulation.push(e.country);
+      }
+    });
+    return uniquePopulation.length;
+  };
+
   render() {
     return (
       <div className="Population">
@@ -74,7 +84,7 @@ class Population extends Component {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan="3">Total Population:</td>
+              <td colSpan="3">Total Population:{this.getUniquePopulationCount()}</td>
             </tr>
           </tfoot>
         </table>

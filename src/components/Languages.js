@@ -56,7 +56,20 @@ class Languages extends Component {
     });
     return uniqueLanguages.length;
   };
+  getUniqueLanguages = () => {
+    const uniqueLanguages = [];
+    const languagesList = this.getPeopleWithLanguage().map((item) => item.languages);
+    const changeLanguageListToStr = languagesList.join(",");
+    const arrayOfLanguagesList = changeLanguageListToStr.split(",");
 
+    arrayOfLanguagesList.forEach((item) => {
+      if (!uniqueLanguages.includes(item)) {
+        return uniqueLanguages.push(item);
+      }
+    });
+
+    return uniqueLanguages.length;
+  };
   render() {
     return (
       <div className="Languages">
@@ -95,7 +108,7 @@ class Languages extends Component {
 
           <tfoot>
             <tr>
-              <td colSpan="3">Total Languages:</td>
+              <td colSpan="3">Total Languages:{this.getUniqueLanguages()}</td>
             </tr>
           </tfoot>
         </table>
