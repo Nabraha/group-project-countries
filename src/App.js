@@ -3,6 +3,7 @@ import Statistics from "./components/Statistics";
 import Languages from "./components/Languages";
 import Population from "./components/Population";
 import members from "./data/members";
+
 import "./App.css";
 
 class App extends Component {
